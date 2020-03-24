@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
+    'bookinventery.apps.BookinventeryConfig'
 ]
 
 MIDDLEWARE = [
@@ -135,4 +136,4 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-LOGIN_REDIRECT_URL='index'
+LOGIN_URL='account:login'

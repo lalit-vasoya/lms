@@ -71,4 +71,5 @@ class Logout(View):
 class Profile(DetailView):
     model         = models.User
     template_name = 'account/profile.html'
+
     

@@ -8,4 +8,5 @@ urlpatterns = [
     path('singup',views.Singup.as_view(),name='singup'),
     path('logout',views.Logout.as_view(),name='logout'),
     path('<int:pk>/profile',views.Profile.as_view(),name='profile'),
+
 ]

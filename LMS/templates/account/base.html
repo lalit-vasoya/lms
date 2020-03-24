@@ -47,13 +47,13 @@
                                   <a class="nav-link disabled {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{{ user.get_absolute_url }}"><i class="fas fa-user"></i> Profile</a>
                                 </li>
                                 <li class="nav-item">
-                                  <a class="nav-link disabled {% if request.resolver_match.url_name == 'booklist' %}active{% endif %}" href=""><i class="fas fa-bookmark"></i></a>
+                                  <a class="nav-link {% if request.resolver_match.url_name == 'booklist' %}active{% endif %}" href="{% url 'bookinventery:mybook' %}"><i class="fa fa-book" aria-hidden="true"></i> Issue Books</a>
                                 </li>
-                                {% if user.is_cleaner %}
+                                
                                 <li class="nav-item">
-                                  <a class="nav-link disabled {% if request.resolver_match.url_name == 'bookorder' %}active{% endif %}" href=""><i class="fas fa-broom"></i> </a>
+                                  <a class="nav-link {% if request.resolver_match.url_name == 'booklist' %}active{% endif %}" href="{% url 'bookinventery:returnbook' %}"><i class="fa fa-book" aria-hidden="true"></i> Return Books</a>
                                 </li>
-                                {% endif %}
+                                
                                 {% else %}
                                 <li class="nav-item">
                                   <a class="nav-link {% if request.resolver_match.url_name == 'registration' %}active{% endif %}" href="{% url 'account:singup'%}"><i class="fas fa-user-plus"></i> Registration</a>
@@ -63,15 +63,13 @@
                           
                             <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
-                              <a class="nav-link {% if request.resolver_match.url_name == 'searchbook' %}active{% endif %}" href=""><i class="fas fa-search"></i> Search Book</a>
+                              <a class="nav-link {% if request.resolver_match.url_name == 'searchbook' %}active{% endif %}" href="{% url 'bookinventery:searchbook' %}"><i class="fas fa-search"></i> Search Book</a>
                             </li>
                            
-                         
-                      
                         {% if user.is_authenticated %}
                           
                             <li class="nav-item">
-                              <a class="nav-link disabled {% if request.resolver_match.url_name == 'logout' %}active{% endif %}" href="{% url 'account:logout'%}"><i class="fas fa-power-off"></i> Log Out</a>
+                              <a class="nav-link  {% if request.resolver_match.url_name == 'logout' %}active{% endif %}" href="{% url 'account:logout'%}"><i class="fas fa-power-off"></i> Log Out</a>
                             </li>
                           </ul>
                         {% endif %}
