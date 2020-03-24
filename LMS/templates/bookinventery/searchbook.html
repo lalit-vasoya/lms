@@ -1,0 +1,128 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block script %}
+    
+{% endblock script %}
+
+
+{% block body %}
+<div class="col-md-12">
+    <center>
+        <hr>
+        <h3><span style="background-color:#f48024;">B</span><span style="background-color:#f8f2fa;">ooks</span></h3>
+        <hr>
+        <div class="col-md-12">
+            <div class="card-deck">
+                {% for i in books %}
+                <div class="card" style="width:400px;border-color: #f48024;margin:5px;">
+                    <div class="card-body">
+                        <h4 class="card-title"><span class="badge badge-light" style="background-color:#f8f2fa;padding:15;">{{ i.title|title }}</span></h4>
+                        <hr style="border-top-color:#343a40;border-top-width:2;">
+                        <h5 class="card-title">Author   : {{ i.author|title }}</h5>
+                        <h5 class="card-title">Quantity : <span id="quantity_{{ i.pk }}">{{ i.quantity }}</span></h5>
+                        <h5 class="card-title">Quantity : {{ i.category }}</h5>
+                        <button class="btn btn-outline-dark issue" type="button" id="id_{{ i.pk }}">Issue</button>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:4 %}
+                    </div>
+                    <div class="card-deck"> 
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>       
+
+        <script>
+
+            function issue(){
+                alert('ok'+this.value);
+            }
+
+            $('.issue').click(function(){
+                
+                let result = confirm('Are you want to issue This book')
+                if(result)
+                {
+                    id=this.id.split('_').pop()
+                    $.ajax({
+                        url:"{% url 'bookinventery:issuebook' %}",
+                        dataType:"json",
+                        data:{'id':id},
+                        success:function(data){
+                            if(data.success==true){
+                                alert(data.msg)  
+                                $('#quantity_'+id).text($('#quantity_'+id).text()-1)
+                            }else{
+                              alert(data.success)
+                            }
+                        },
+                    });                
+                }else{
+
+                }
+            });
+        </script>
+{% endblock body %}
+
+
+        <p id="error"></p>
+        <table>
+            <form method="POST" id="searchform">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <tr>
+                    <td>
+                        {{ field.label}}
+                    </td>
+                    <td style="padding: 10px;">
+                        {{ field }}
+                    </td>
+                    <td>
+                        {{ field.errors }}
+                    </td>
+                </tr>
+                {% endfor%}
+                <tr>
+                    <td colspan="3">
+                        <!-- <center><button type="submit" class="btn btn-primary">Search Cleaner</button></center> -->
+                    </td>
+                </tr>
+            </form>
+        </table>
+    </center>
+    <br>
+</div>
+{% if cleaner|length > 0 %}
+<div class="col-md-12">
+    <div class="card-deck">
+        {% for i in cleaner %}
+        <div class="card" style="width:400px;border-color: #f48024;">
+            <div class="card-body">
+                <h4 class="card-title">{{ i.user.first_name|title }}</h4>
+                <p class="card-text">Rate:
+                    {% for j in range %}
+                        {% if i.quality_score > j %}
+                            <i class="fas fa-star "></i>
+                        {% else %}
+                            <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}</p>
+                <a href="{% url 'booking:cleanerconfirm' i.pk %}" class="btn btn-outline-dark">Book</a>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:4 %}
+            </div>
+            <div class="card-deck"> 
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+
+{% elif cleaner|length <= 0 and  cleaner != None %}
+<div class="alert alert-danger">
+    <a href="#" class="alert-link">Cleaner not Available</a>.
+</div>
+{% endif%}
+</div>
