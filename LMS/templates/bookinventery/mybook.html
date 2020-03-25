@@ -21,6 +21,7 @@
                     <th>No.</th>
                     <th>Title</th>
                     <th>Author</th>
+                    <th>Request Date</th>
                     <th>Issue Date</th>
                     <th>Return Date</th>
                     <th>Status</th>
@@ -33,8 +34,9 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ i.book.title }}</td>
                     <td>{{ i.book.author }}</td>
-                    <td>{{ i.issue_date }}</td>
-                    <td>{% if i.return_date %}{{ i.return_date }} {% endif %}</td>
+                    <td>{{ i.request_date }}</td>
+                    <td>{% if i.issue_date %}{{ i.issue_date }} {% else %} -- {% endif %}</td>
+                    <td>{% if i.return_date %}{{ i.return_date }} {% else %} -- {% endif %}</td>
                     <td>
                         {% if i.status == 0 %}
                             <span class="badge badge-info">Pending</span>
@@ -48,11 +50,11 @@
             </body>
         </table>
         {% else %}
-        <div class="alert alert-warning">
-            <strong>
-                <h2>You have not any {{title}}...</h2>
-            </strong>
-        </div>
+        <div class="col-sm-12">
+            <br>
+            <div class="alert alert-warning text-center" style="width:80%;margin: 0 auto;">
+                <a href="#" class="alert-link">You have not any {{title}}...!</a>
+            </div> 
         {% endif %}
     </center>
 </div>

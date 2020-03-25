@@ -1,6 +1,7 @@
 from django.db import models
 from account.models import User
 from django.urls import reverse
+from django.utils import timezone
 
 class BookCategories(models.Model):
     ''' Books Categories which type of book and it's description '''
@@ -22,17 +23,16 @@ class BookDetail(models.Model):
         return self.title
 
 class Transaction(models.Model):
-    STATUS = ((0,'Pending'),(1,'Issue'),(2,'Return'))
-
     ''' Books Transaction who issue book,which book are issue,how many time he/she ready the book '''
-    book        = models.ForeignKey(BookDetail,on_delete=models.CASCADE)
-    issue_by    = models.ForeignKey(User,on_delete=models.CASCADE)
-    issue_date  = models.DateField(auto_now_add=True)
-    return_date = models.DateField(null=True,blank=True)
-    status      = models.PositiveIntegerField(choices=STATUS,default=0)
+
+    STATUS = ((0,'Pending'),(1,'Issue'),(2,'Return'))
+    
+    book         = models.ForeignKey(BookDetail,on_delete=models.CASCADE)
+    issue_by     = models.ForeignKey(User,on_delete=models.CASCADE)
+    request_date = models.DateField(default=timezone.now)
+    issue_date   = models.DateField(null=True,blank=True)
+    return_date  = models.DateField(null=True,blank=True)
+    status       = models.PositiveIntegerField(choices=STATUS,default=0)
 
     def __str__(self):
         return self.book.title
-
-    
-

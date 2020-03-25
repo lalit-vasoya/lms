@@ -3,7 +3,6 @@ from account import models
 from django.contrib.auth.forms import UserCreationForm
 
 class SingupForm(UserCreationForm):
-
     class Meta:
         model  = models.User
         fields = ['first_name','last_name','contact','email','username','password1','password2']

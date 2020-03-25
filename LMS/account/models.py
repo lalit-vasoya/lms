@@ -4,7 +4,7 @@ from django.urls import reverse
 
 
 class User(AbstractUser):
-
+    ''' User Extends with extra fields '''
     contact = models.CharField(max_length = 12)
     email   = models.EmailField(unique = True)
 
@@ -20,6 +20,7 @@ class User(AbstractUser):
 
     
 class Profile(models.Model):
+    ''' User Profile Table '''
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     details = models.TextField()
 

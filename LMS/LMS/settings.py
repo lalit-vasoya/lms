@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'account.apps.AccountConfig',
-    'bookinventery.apps.BookinventeryConfig'
+    'bookinventery.apps.bookinventeryConfig'
 ]
 
 MIDDLEWARE = [

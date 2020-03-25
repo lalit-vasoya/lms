@@ -1,0 +1,95 @@
+{% extends 'account/base.html' %}
+{% block body %}
+<div class="col-md-12">
+    <center>
+
+        {% if object_list %}
+        <hr>
+        <div>
+            <strong>            
+                    <h3><span style="background-color:#f48024;">&nbsp;R</span><span style="background-color:#f8f2fa;">equest</span> <span style="background-color:#f48024;">B</span><span style="background-color:#f8f2fa;">ooks</span></h3>
+            </strong>
+        </div>
+        <hr>
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Request By</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Request Date</th>
+                    <th>Issue Date</th>
+                    <th>Return Date</th>
+                    <th>Current Status</th>
+                    <th>Change Status</th>
+                </tr>
+            </thead>
+
+            <body>
+                {% for i in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><b>{{ i.issue_by }}</b></td>
+                    <td>{{ i.book.title }}</td>
+                    <td>{{ i.book.author }}</td>
+                    <td><b>{{ i.request_date }}</b></td>
+                    <td id="issue_date{{ i.id }}">{% if i.issue_date %}{{ i.issue_date }} {% else %} -- {% endif %}</td>
+                    <td id="return_date{{ i.id }}">{% if i.return_date %}{{ i.return_date }} {% else %} -- {% endif %}</td>
+                    <td id="cureentstatus{{ i.id }}">
+                        {% if i.status == 0 %}
+                            <span class="badge badge-info">Pending</span>
+                        {% elif i.status == 1 %}
+                            <span class="badge badge-danger">Not Return Yet</span>
+                        {% else %}
+                            <span class="badge badge-success">Return</span> 
+                        {% endif %}</td>
+                    <td>
+                        <select class="form-control form-control-sm" id='{{ i.id }}' name="change-status">
+                            <option value='0' {% if i.status == 0 %} selected {% endif %}>Pending</option>
+                            <option value='1' {% if i.status == 1 %} selected {% endif %}>Issue</option>
+                            <option value='2' {% if i.status == 2 %} selected {% endif %}>Return</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+
+                <script>
+                    $('select[name=change-status]').change(function(){ 
+                        let id      = this.id
+                        let status  = this.value
+                        let val = {0:'Pending',1:'Issue',2:'Return'}
+                        let render  = {
+                            0 : '<span class="badge badge-info">Pending</span>',
+                            1 : '<span class="badge badge-danger">Not Return Yet</span>',
+                            2 : '<span class="badge badge-success">Return</span> '
+                        } 
+                        $.ajax({
+                            url: "{% url 'bookinventery:changestatus' %}",
+                            dataType: "json",
+                            data: { 'id': id,'status':status},
+                            success: function (data) {
+                                if (data.success == true) {
+                                    alert(data.msg)
+                                    $('#cureentstatus' + id).html(render[status])
+                                } else { 
+                                    alert(data.msg + 'You can\'t direct '+val[id]);
+                                    $('select[name=change-status]').val(data.status)
+                                    $('select[name=change-status]').attr('selected','selected')
+                                }
+                            },
+                        });
+                    });
+                </script>
+            </body>
+        </table>
+        {% else %}
+        <div class="col-sm-12">
+            <br>
+            <div class="alert alert-warning text-center" style="width:80%;margin: 0 auto;">
+                <a href="#" class="alert-link">You have not any Pending Request...!</a>
+            </div> 
+        {% endif %}
+    </center>
+</div>
+{% endblock body %}
