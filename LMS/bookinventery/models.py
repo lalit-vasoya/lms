@@ -29,10 +29,25 @@ class Transaction(models.Model):
     
     book         = models.ForeignKey(BookDetail,on_delete=models.CASCADE)
     issue_by     = models.ForeignKey(User,on_delete=models.CASCADE)
-    request_date = models.DateField(default=timezone.now)
-    issue_date   = models.DateField(null=True,blank=True)
-    return_date  = models.DateField(null=True,blank=True)
+    request_date = models.DateTimeField(default=timezone.now)
+    issue_date   = models.DateTimeField(null=True,blank=True)
+    return_date  = models.DateTimeField(null=True,blank=True)
     status       = models.PositiveIntegerField(choices=STATUS,default=0)
 
     def __str__(self):
         return self.book.title
+
+class Waiting(models.Model):
+    book    = models.OneToOneField(BookDetail,on_delete=models.CASCADE)
+    user    = models.ManyToManyField(User,through='WaitingTime')
+
+    def __str__(self):
+        return self.book.title
+
+class WaitingTime(models.Model):
+    user            = models.ForeignKey(User,on_delete=models.CASCADE)
+    waiting         = models.ForeignKey(Waiting,on_delete=models.CASCADE)
+    request_time    = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return  str(self.request_time)

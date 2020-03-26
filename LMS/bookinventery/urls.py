@@ -8,8 +8,11 @@ urlpatterns = [
     path('requestbook',views.Requestbook.as_view(),name='requestbook'),
     path('issuebook',views.Issuebook.as_view(),name='issuebook'),
     path('returnbook',views.Returnbook.as_view(),name='returnbook'),
+    path('waitinglist',views.Waitinglist.as_view(),name='waitinglist'),
+    path('waitingqueue',views.Waitingqueue.as_view(),name='waitingqueue'),
 
     #librarian profile url
     path('pendingrequest',views.Pendingrequest.as_view(),name='pendingrequest'),
     path('changestatus',views.Changestatus.as_view(),name='changestatus'),
+    path('<int:id>/deleterequest',views.Deleterequest.as_view(),name='deleterequest'),
 ]

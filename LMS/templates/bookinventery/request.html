@@ -23,6 +23,7 @@
                     <th>Return Date</th>
                     <th>Current Status</th>
                     <th>Change Status</th>
+                    <th>Delete Request</th>
                 </tr>
             </thead>
 
@@ -51,6 +52,9 @@
                             <option value='2' {% if i.status == 2 %} selected {% endif %}>Return</option>
                         </select>
                     </td>
+                    <td>
+                        <!-- <a class="btn btn-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-trash"></i></a> -->
+                    </td>
                 </tr>
                 {% endfor %}
 
@@ -58,7 +62,6 @@
                     $('select[name=change-status]').change(function(){ 
                         let id      = this.id
                         let status  = this.value
-                        let val = {0:'Pending',1:'Issue',2:'Return'}
                         let render  = {
                             0 : '<span class="badge badge-info">Pending</span>',
                             1 : '<span class="badge badge-danger">Not Return Yet</span>',
@@ -72,8 +75,9 @@
                                 if (data.success == true) {
                                     alert(data.msg)
                                     $('#cureentstatus' + id).html(render[status])
+                                    console.log(data.status)
                                 } else { 
-                                    alert(data.msg + 'You can\'t direct '+val[id]);
+                                    alert(data.msg + 'You can\'t direct ');
                                     $('select[name=change-status]').val(data.status)
                                     $('select[name=change-status]').attr('selected','selected')
                                 }

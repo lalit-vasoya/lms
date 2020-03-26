@@ -5,7 +5,7 @@ from django.urls import reverse
 
 class User(AbstractUser):
     ''' User Extends with extra fields '''
-    contact = models.CharField(max_length = 12)
+    contact = models.BigIntegerField()
     email   = models.EmailField(unique = True)
 
     USERNAME_FIELD = 'email'
@@ -17,12 +17,3 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("account:profile", kwargs={"pk": self.pk})
     
-
-    
-class Profile(models.Model):
-    ''' User Profile Table '''
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    details = models.TextField()
-
-    def __str__(self):
-        return self.details
