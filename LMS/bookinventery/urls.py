@@ -13,6 +13,7 @@ urlpatterns = [
 
     #librarian profile url
     path('pendingrequest',views.Pendingrequest.as_view(),name='pendingrequest'),
-    path('changestatus',views.Changestatus.as_view(),name='changestatus'),
+    path('<int:id>/acceptrequest',views.Acceptrequest.as_view(),name='acceptrequest'),
+    path('<int:id>/returnrequest',views.Returnrequest.as_view(),name='returnrequest'),
     path('<int:id>/deleterequest',views.Deleterequest.as_view(),name='deleterequest'),
 ]

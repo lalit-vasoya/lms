@@ -2,7 +2,6 @@
 {% block body %}
 <div class="col-md-12">
     <center>
-
         {% if object_list %}
         <hr>
         <div>
@@ -16,6 +15,7 @@
                 <tr>
                     <th>No.</th>
                     <th>Request By</th>
+                    <th>Std. Contact</th>
                     <th>Title</th>
                     <th>Author</th>
                     <th>Request Date</th>
@@ -32,6 +32,7 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td><b>{{ i.issue_by }}</b></td>
+                    <td><b>{{ i.issue_by.contact }}</b></td>
                     <td>{{ i.book.title }}</td>
                     <td>{{ i.book.author }}</td>
                     <td><b>{{ i.request_date }}</b></td>
@@ -45,44 +46,41 @@
                         {% else %}
                             <span class="badge badge-success">Return</span> 
                         {% endif %}</td>
-                    <td>
-                        <select class="form-control form-control-sm" id='{{ i.id }}' name="change-status">
-                            <option value='0' {% if i.status == 0 %} selected {% endif %}>Pending</option>
-                            <option value='1' {% if i.status == 1 %} selected {% endif %}>Issue</option>
-                            <option value='2' {% if i.status == 2 %} selected {% endif %}>Return</option>
-                        </select>
-                    </td>
-                    <td>
-                        <!-- <a class="btn btn-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-trash"></i></a> -->
-                    </td>
+                    <td> 
+                        {% if i.status == 0 %}
+                            <a class="badge badge-success accept sm" href="{% url 'bookinventery:acceptrequest' id=i.id %}">Issue <i class="fas fa-check fa-1x"></i></a>
+                            </td>
+                            <td>
+                                <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-trash"></i></a>
+                            </td>
+                        {% elif i.status == 1 %}
+                                <a class="badge badge-info return sm" href="{% url 'bookinventery:returnrequest' id=i.id %}">Return <i class="fas fa-check fa-1x"></i></a>
+                            </td>
+                        {% endif %}
+                    
                 </tr>
                 {% endfor %}
 
                 <script>
-                    $('select[name=change-status]').change(function(){ 
-                        let id      = this.id
-                        let status  = this.value
-                        let render  = {
-                            0 : '<span class="badge badge-info">Pending</span>',
-                            1 : '<span class="badge badge-danger">Not Return Yet</span>',
-                            2 : '<span class="badge badge-success">Return</span> '
-                        } 
-                        $.ajax({
-                            url: "{% url 'bookinventery:changestatus' %}",
-                            dataType: "json",
-                            data: { 'id': id,'status':status},
-                            success: function (data) {
-                                if (data.success == true) {
-                                    alert(data.msg)
-                                    $('#cureentstatus' + id).html(render[status])
-                                    console.log(data.status)
-                                } else { 
-                                    alert(data.msg + 'You can\'t direct ');
-                                    $('select[name=change-status]').val(data.status)
-                                    $('select[name=change-status]').attr('selected','selected')
-                                }
-                            },
-                        });
+                    $('.accept').click(function (event) {
+                        let result = confirm('Are you sure,issue This Book to this student')
+                        if (!result) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    $('.return').click(function (event) {
+                        let result = confirm('Are you sure This Book Return By Student')
+                        if (!result) {
+                            event.preventDefault();
+                        }
+                    });
+                    
+                    $('.delete').click(function (event) {
+                        let result = confirm('Are you sure,You want to Delete This Record')
+                        if (!result) {
+                            event.preventDefault();
+                        }
                     });
                 </script>
             </body>

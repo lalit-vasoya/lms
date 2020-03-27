@@ -2,6 +2,7 @@ from django.db import models
 from account.models import User
 from django.urls import reverse
 from django.utils import timezone
+# from django.db.models.query import QuerySet
 
 class BookCategories(models.Model):
     ''' Books Categories which type of book and it's description '''

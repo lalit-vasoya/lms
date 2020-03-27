@@ -57,7 +57,9 @@
                 success: function (data) {
                     if (data.success == true) {
                         alert(data.msg)
-                        $('#quantity_' + id).text($('#quantity_' + id).text() - 1)
+                        if(data.deduce){
+                            $('#quantity_' + id).text($('#quantity_' + id).text() - 1)
+                        }
                     } else {
                         alert(data.success)
                     }

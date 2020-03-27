@@ -15,16 +15,21 @@
             </strong>
         </div>
         <hr>
-        <table class="table table-hover text-center" style="width:70%;">
+        <table class="table table-hover text-center">
             <thead>
                 <tr>
                     <th>No.</th>
+                    {% if user.is_staff %}
+                    <th><b>Issue By</b></th>
+                    <th><b>Contact</b></th>
+                    {% endif %}
                     <th>Title</th>
                     <th>Author</th>
                     <th>Request Date</th>
                     <th>Issue Date</th>
                     <th>Return Date</th>
                     <th>Status</th>
+                    <th>Delete Request</th>
                 </tr>
             </thead>
 
@@ -32,6 +37,10 @@
                 {% for i in object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
+                    {% if user.is_staff %}
+                    <td><b>{{ i.issue_by }}</b></td>
+                    <td><b>{{ i.issue_by.contact }}</b></td>
+                    {% endif %}
                     <td>{{ i.book.title }}</td>
                     <td>{{ i.book.author }}</td>
                     <td>{{ i.request_date }}</td>
@@ -44,7 +53,13 @@
                             <span class="badge badge-danger">Not Return Yet</span>
                         {% else %}
                             <span class="badge badge-success">Return</span> 
-                        {% endif %}</td>
+                        {% endif %}
+                    </td>
+                    {% if i.status == 0 %}
+                    <td>
+                        <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-trash"></i></a>
+                    </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </body>
@@ -57,5 +72,14 @@
             </div> 
         {% endif %}
     </center>
+
 </div>
+    <script>
+        $('.delete').click(function (event) {
+            let result = confirm('Are you sure,You want to Delete This Record')
+            if (!result) {
+                event.preventDefault();
+            }
+        });
+    </script>
 {% endblock body %}
