@@ -17,3 +17,20 @@ class SingupForm(UserCreationForm):
 class LoginForm(forms.Form): 
     email   = forms.CharField(max_length=40,label="Enter Email",widget=forms.EmailInput(attrs={'class':'form-control','placeholder':'Enter Email'}))
     password  = forms.CharField(max_length=20,label="Enter Password",widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter Password'}))
+
+class ProfileUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model   = models.User
+        fields  = ['first_name','last_name','contact']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class':'form-control','placeholder':self.fields[field].label})
+        
+        # self.fields['email'].widget.attrs.update({'disabled':True,'placeholder':'Email'})
+        
+
+

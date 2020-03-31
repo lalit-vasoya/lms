@@ -5,7 +5,7 @@ from django.urls import reverse
 
 class User(AbstractUser):
     ''' User Extends with extra fields '''
-    contact = models.BigIntegerField()
+    contact = models.BigIntegerField(blank=True,null=True)
     email   = models.EmailField(unique = True)
 
     USERNAME_FIELD = 'email'

@@ -27,6 +27,10 @@
                 <td>Contact</td>
                 <td style="font-weight:bold;">{{ object.contact}}</td>
             </tr>
+            <tr>
+                <td>Edit</td>
+                <td><a class="btn btn-info" href="{% url 'account:updateprofile' %}"><i class="fas fa-edit"></i> Edit Profile</a></td>
+            </tr>
         </table>
     </center>
 </div>
@@ -35,68 +39,3 @@
 
 {% endblock body %}
 
-<!------------------------------------------------------------------------------------------>
-{% if not user.is_cleaner %}
-<div class="alert alert-primary">
-    <a href="#" class="alert-link">You Want to become a Cleaner</a>.
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-        click on me
-    </button>
-</div>
-{% else %}
-<div class="alert alert-success">
-    <strong>You are also Cleaner</strong>
-</div>
-{% endif %}
-{% if cleaner %}
-<table class="table table-hover" style="width:70%;">
-    <tr>
-        <td>Your Service City:</td>
-        <td>{{ cleaner.city|title }}</td>
-    </tr>
-    <tr>
-        <td>Your Rate:</td>
-        <td>
-            {% for j in range %}
-                {% if cleaner.quality_score > j %}
-                    <i class="fas fa-star"></i>
-                {% else %}
-                    <i class="far fa-star"></i>
-                {% endif %}
-            {% endfor %}
-        </td>
-    </tr>
-</table>
-{% endif %}
-
-<div class="modal" id="myModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Select City Where You Want to Give Your Sercive</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <center>
-                    <table>
-                        <form method="POST" action="{% url 'registration:cleanercreate'%}">
-                            {% csrf_token %}
-                            {{ form }}
-                    </table>
-                </center>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Register Cleaner</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div>

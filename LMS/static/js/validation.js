@@ -6,10 +6,10 @@ $(document).ready(function(){
          var con= /^[0-9]*$/
          $('#error_contact').remove()
          if(len.length>10 || len.length<10 ){
-             $("#id_contact").after("<span style='color:red' id='error_contact'>* Enter Contact Number Must be 10 digit !</span>")
+             $("#id_contact").after("<span style='color:orange' id='error_contact'>* Enter Contact Number Must be 10 digit !</span>")
              return false
          }else if(!con.test(len)){
-            $("#id_contact").after("<span style='color:red' id='error_contact'>*  Enter Contact Number Must be digit not a character !</span>")
+            $("#id_contact").after("<span style='color:orange' id='error_contact'>*  Enter Contact Number Must be digit not a character !</span>")
              return false
          }else{
              return true
@@ -21,20 +21,23 @@ $(document).ready(function(){
          var con= /^[a-zA-Z_.0-9]+@[a-zA-Z]+[.]{1}[a-zA-Z]+$/
          $('#error_email').remove()
          if(!con.test(len)){
-            $("#id_email").after("<span style='color:red' id='error_email'>*  Enter Email is not valid !</spna>")
+            $("#id_email").after("<span style='color:orange' id='error_email'>*  Enter Email is not valid !</spna>")
              return false
          }else{
              return true
          }
     }
     function first_name_validation(){
+
         len=$('#id_first_name').val()
         var con= /^[a-zA-Z_]*$/
         $('#error_first_name').remove()
-        if(!con.test(len)){
-            $("#id_first_name").after("<span style='color:red' id='error_first_name'>*  Enter First Name Must be character or _ no a digit or special charecter !</span>")
+        console.log('blur',con.test(len),len,);
+        if(len.length<=0 || !con.test(len)){
+            $("#id_first_name").after("<span style='color:orange;font-width:4vw;' id='error_first_name'>*  Enter First Name Must be character or _ no a <wbr>digit or special charecter !</span>")
             return false
         }else{
+            console.log(con.test(len));
             return true
         }
     }
@@ -43,8 +46,8 @@ $(document).ready(function(){
         len=$('#id_last_name').val()
         var con= /^[a-zA-Z_]*$/
         $('#error_last_name').remove()
-        if(!con.test(len)){
-            $('#id_last_name').after("<span style='color:red' id='error_last_name'>* Enter Last Name Must be character or _ no a digit or special charecter !</span>")
+        if(len.length<=0 || !con.test(len)){
+            $('#id_last_name').after("<span style='color:orange;overflow:hidden;' id='error_last_name'>* Enter Last Name Must be character or _ no a digit or special charecter !</span>")
             return false
         }else{
             return true
@@ -56,12 +59,12 @@ $(document).ready(function(){
         pass2=$('#id_password2').val()
         $('#error_password2').remove()
         if(pass2.length<=0){
-            $('#id_password2').after("<span style='color:red' id='error_password2'>* Confirm Password should not be blank !</span>") 
+            $('#id_password2').after("<span style='color:orange' id='error_password2'>* Confirm Password should not be blank !</span>") 
             return false
         }
 
         if(pass1!=pass2){
-            $('#id_password2').after("<span style='color:red' id='error_last_name'>* Password not match with Confirm Password !</span>") 
+            $('#id_password2').after("<span style='color:orange' id='error_last_name'>* Password not match with Confirm Password !</span>") 
             return false
         }else{
             return true
@@ -115,7 +118,7 @@ $(document).ready(function(){
         timeslotval=$('#id_timeslot').val()
         $("#error_timeslot").remove() 
         if(timeslotval== 0){
-            $("#id_timeslot").after("<span style='color:red' id='error_city'>*  Select Time Slot !</span>") 
+            $("#id_timeslot").after("<span style='color:orange' id='error_city'>*  Select Time Slot !</span>") 
             return false
         }else{
             return true
@@ -172,6 +175,14 @@ $(document).ready(function(){
         {
             e.preventDefault()
         }
+    });
+
+    $('#profile-update').submit(function(e) {
+        
+        if(!(first_name_validation() && last_name_validation() && contact_validation())) 
+        {
+            e.preventDefault()
+        } 
     });
  
 });

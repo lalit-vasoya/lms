@@ -72,4 +72,18 @@ class Profile(DetailView):
     model         = models.User
     template_name = 'account/profile.html'
 
-    
+@method_decorator(login_required, name='dispatch')
+class Updateprofile(View):
+
+    def get(self,request,*args, **kwargs):
+        form = forms.ProfileUpdateForm()
+        return render(request,'account/updateprofile.html',{'form':form})           
+
+    def post(self,request,*args, **kwargs):
+        form = forms.ProfileUpdateForm(request.POST,instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.email = request.user.email
+            user.save()
+            return redirect('account:profile',pk=request.user.id)
+        return render(request,'account/updateprofile.html',{'form':form})           
