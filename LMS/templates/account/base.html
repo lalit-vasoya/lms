@@ -15,10 +15,24 @@
   <script src="{% static 'js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/validation.js' %}"></script>
   <style>
-    hr {
-      border-top-color: #f48024;
+    :root{
+      {% if user.is_staff %}
+      --main-bg-color: #66a3ff;
+      --card-bg-color: #e6f0f5;
+      {% else %}
+      --main-bg-color: #f48024;
+      --card-bg-color: #fef1fe;
+      {% endif%}
     }
 
+    .alert-warning
+    {
+      background-color: var(--card-bg-color);
+      border-color: var(--main-bg-color);
+    }
+    hr {
+        border-top-color: var(--main-bg-color);
+    }
     .navbar-brand {
       border-right: 2px solid rgba(0, 0, 0, .3);
       ;
@@ -26,8 +40,15 @@
     }
   </style>
   <script>
+  
     $(document).ready(function () {
-      $('.active').find('i.fas').css('color', '#f48024')
+
+      {% if user.staff %}
+        $('.active').find('i.fas').css('color', 'var(--main-bg-color)')
+      {% else %}
+        $('.active').find('i.fas').css('color', 'var(--main-bg-color)')
+      {% endif%}
+      
     });
   </script>
 </head>
@@ -43,7 +64,7 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
             <a class="navbar-brand" href="{% url 'account:index' %}"> <i class="fa fa-book-reader"
-                style="color:#f48024;"></i> LMS </a>
+                style="color:var(--main-bg-color)"></i> LMS </a>
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"

@@ -2,29 +2,36 @@
 {% load static %}
 
 {% block body %}
+<div class="col-md-12 ">
 {% if books|length > 0 %}
-<div class="col-md-12">
     <center>
         <hr>
-        <h3><span style="background-color:#f48024;">B</span><span style="background-color:#f8f2fa;">ooks</span> </h3>
+        <h3><span style="background-color:var(--main-bg-color);">B</span><span style="background-color:#f8f2fa;">ooks</span> </h3>
+        <div class="col-md-4">
+            <input type="text" placeholder="Search Books" class="form-control searchbook"/>
+        </div>
         <hr>
-        <div class="col-md-12">
+        <div class="col-md-12 byajax">
             <div class="card-deck">
+                <div class="row">
                 {% for i in books %}
-                <div class="card" style="width:400px;border-color: #f48024;margin:5px;">
-                    <div class="card-body">
-                        <h4 class="card-title"><span class="badge badge-light"
-                                style="background-color:#f8f2fa;padding:15;">{{ i.title|title }}</span></h4>
-                        <hr style="border-top-color:#343a40;border-top-width:2;">
-                        <h5 class="card-title">Author : {{ i.author|title }}</h5>
-                        <h5 class="card-title">Quantity : <span id="quantity_{{ i.pk }}">{{ i.quantity }}</span></h5>
-                        <h5 class="card-title">Category : {{ i.category }}</h5>
-                        <button class="btn btn-outline-dark issue" type="button" id="id_{{ i.pk }}">Issue</button>
+                  <div class="col-md-3">
+                    <div class="card" style="width:280px;border-color: var(--main-bg-color);margin:5px;background-color:var(--card-bg-color);">
+                        <div class="card-body">
+                            <h4 class="card-title" style="background-color:#f8f2fa;padding:5;">{{ i.title|title }}</h4>
+                            <hr style="border-top-color:#343a40;border-top-width:2;">
+                            <h5 class="card-title">Author : {{ i.author|title }}</h5>
+                            <h5 class="card-title">Quantity : <span id="quantity_{{ i.pk }}">{{ i.quantity }}</span></h5>
+                            <h5 class="card-title">Category : {{ i.category }}</h5>
+                            <button class="btn btn-outline-dark issue" type="button" id="id_{{ i.pk }}">Issue</button>
+                        </div>
                     </div>
-                </div>
+                  </div>
                 {% if forloop.counter|divisibleby:4 %}
-            </div>
-            <div class="card-deck">
+                </div>
+                </div>
+                <div class="card-deck">
+                <div class="row">
                 {% endif %}
                 {% endfor %}
             </div>
@@ -37,15 +44,63 @@
             </div>  
         {% endif%}
     </center>
-</div>
+</div> 
+
+
+
 
 <script>
+    let timer = null;
 
     function issue() {
         alert('ok' + this.value);
     }
 
-    $('.issue').click(function () {
+    function searchbook(){
+        let searchBook = $('.searchbook');
+        $('.byajax').html('');
+        $.ajax({
+            url: "{% url 'bookinventery:searchbookajax' %}",
+            dataType: "json",
+            data: { 'searchtext': searchBook.val() },
+            success: function (data) {
+                books = JSON.parse(data.books)
+                let card = `<div class="card-deck"><div class="row">`;
+                    for(i in books){
+                    console.log(books[i].fields)
+
+                    card += `<div class="col-md-3">
+                                <div class="card" style="width:280px;border-color: var(--main-bg-color);margin:5px;background-color:var(--card-bg-color);">
+                                    <div class="card-body">
+                                        <h4 class="card-title" style="background-color:#f8f2fa;padding:5;">${books[i].fields.title}</span></h4>
+                                        <hr style="border-top-color:#343a40;border-top-width:2;">
+                                        <h5 class="card-title">Author : ${books[i].fields.author}</h5>
+                                        <h5 class="card-title">Quantity : <span id="quantity_${books[i].pk}">${books[i].fields.quantity}</span></h5>
+                                        <h5 class="card-title">Category : ${books[i].fields.category}</h5>
+                                        <button class="btn btn-outline-dark issue" type="button" id="id_${books[i].pk}">Issue</button>
+                                    </div>
+                                </div>
+                            </div>`;
+                            if(i%3==0){
+                                card+=`</div>
+                                        </div>
+                                        <div class="card-deck">
+                                        <div class="row">`;
+                            }
+                    }
+                    card+=`</div></div>`;
+                    $('.byajax').html(card);
+            },
+        });   
+    
+    }
+
+    $('.searchbook').keyup(function(e){
+        clearTimeout(timer)
+        timer = setTimeout(searchbook,800)
+    });
+
+    $(document).on('click','button.issue',function () {
 
         let result = confirm('Are you want to issue This book')
         if (result) {
@@ -58,7 +113,8 @@
                     if (data.success == true) {
                         alert(data.msg)
                         if(data.deduce){
-                            $('#quantity_' + id).text($('#quantity_' + id).text() - 1)
+                            let val = $('#quantity_' + id).text();
+                            val = $('#quantity_' + id).text(val-1);
                         }
                     } else {
                         alert(data.success)
@@ -69,5 +125,7 @@
 
         }
     });
+
+
 </script>
 {% endblock body %}

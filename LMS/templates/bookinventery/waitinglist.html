@@ -2,16 +2,16 @@
 {% load static %}
 
 {% block body %}
-{% if waiting|length > 0 %}
 <div class="col-md-12">
+{% if waiting|length > 0 %}
     <center>
         <hr>
-        <h3><span style="background-color:#f48024;">W</span><span style="background-color:#f8f2fa;">iting </span><span style="background-color:#f48024;">L</span><span style="background-color:#f8f2fa;">ist </span><span style="background-color:#f48024;">B</span><span style="background-color:#f8f2fa;">ooks</span> </h3>
+        <h3><span style="background-color:var(--main-bg-color);">W</span><span style="background-color:#f8f2fa;">iting </span><span style="background-color:var(--main-bg-color);">L</span><span style="background-color:#f8f2fa;">ist </span><span style="background-color:var(--main-bg-color);">B</span><span style="background-color:#f8f2fa;">ooks</span> </h3>
         <hr>
         <div class="col-md-12">
             <div class="card-deck">
                 {% for i in waiting %}
-                <div class="card" style="width:400px;border-color: #f48024;margin:5px;">
+                <div class="card" style="width:400px;border-color: var(--main-bg-color);margin:5px;background-color:var(--card-bg-color);">
                     <div class="card-body">
                         <h4 class="card-title"><span class="badge badge-light"
                                 style="background-color:#f8f2fa;padding:15;">{{ i.book.title|title }}</span></h4>
@@ -86,6 +86,7 @@
                                     "<th>No.(Priority)</th>"+
                                     "<th>Student</th>"+
                                     "<th>Request Time</th>"+
+                                    "<th>Delete Request</th>"
                                 "</tr>"+
                             "</thead>"+               
                                 "<tbody>";
@@ -95,6 +96,14 @@
                                     "<td>"+(parseInt(i)+1)+"</td>"+
                                     "<td>"+(data.student[i])+"</td>"+
                                     "<td>"+(data.re_time[i])+"</td>"+
+                                    "<td>";
+
+                                        if(data.url[i]){
+                                            table+="<a class='badge badge-danger delete' href="+data.url[i]+"><i class='fas fa-trash'></i></a>";
+                                        }else{
+                                            table+="<a class='badge badge-danger delete' deactive><i class='fas fa-trash'></i></a>";   
+                                        }
+                                        table+="</td>"+
                                     "</tr>";
                                 }
                                 table+="</tbody></table>"

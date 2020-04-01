@@ -34,7 +34,7 @@ $(document).ready(function(){
         $('#error_first_name').remove()
         console.log('blur',con.test(len),len,);
         if(len.length<=0 || !con.test(len)){
-            $("#id_first_name").after("<span style='color:orange;font-width:4vw;' id='error_first_name'>*  Enter First Name Must be character or _ no a <wbr>digit or special charecter !</span>")
+            $("#id_first_name").after("<span style='color:orange;font-width:4vw;' id='error_first_name'>*  Enter First Name Must be character or _ no a <br>digit or special charecter !</span>")
             return false
         }else{
             console.log(con.test(len));

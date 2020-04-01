@@ -1,4 +1,4 @@
-from django.shortcuts               import render,get_object_or_404,redirect
+from django.shortcuts               import render,get_object_or_404,redirect,reverse
 from django.views                   import View
 from django.views.generic           import ListView
 from django.contrib                 import messages
@@ -10,14 +10,30 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators        import method_decorator
 from django.core.mail               import send_mail
 from LMS                            import password
+from django.core.serializers        import serialize
 import threading
+from itertools                      import chain
 
 @method_decorator(login_required, name='dispatch')
-class SearchBook(View):
+class Searchbook(View):
     ''' Render The SearchBook Html '''
     def get(self,request,*args, **kwargs):
         books = models.BookDetail.objects.all()
         return render(request,'bookinventery/searchbook.html',{'books':books})
+
+@method_decorator(login_required, name='dispatch')
+class Searchbookajax(View):
+    ''' Search Book on autosearch '''
+    def get(self,request,*args, **kwargs):
+        searchtext  = request.GET.get('searchtext',None)
+        if searchtext=="":
+            books = models.BookDetail.objects.all()
+        else:
+            books       = models.BookDetail.objects.filter(title__icontains=searchtext)
+        context     ={'books':serialize('json',books)}
+        context['success']  = True
+        return JsonResponse(status=200,data=context)
+                
 
 @method_decorator(login_required, name='dispatch')
 class Requestbook(View):
@@ -90,6 +106,8 @@ class Pendingrequest(View):
     def get(self,request,*args, **kwargs):
         transaction = models.Transaction.objects.filter(status__in=[0,1]).order_by('status','request_date')
         return render(request,'bookinventery/request.html',{'object_list':transaction})
+
+
         
 
 @method_decorator(login_required, name='dispatch')
@@ -151,8 +169,7 @@ class Deleterequest(View):
                 else:
                     print('-----------------else')
                     models.BookDetail.objects.filter(id=id).update(quantity=F('quantity')+1)
-            else:
-                messages.error(request,'This Book Issue for You')
+
         except Exception as e:
             print(e)
         if request.user.is_staff:
@@ -169,6 +186,8 @@ class Waitinglist(View):
             waiting = models.Waiting.objects.filter(user=request.user)
         return render(request,'bookinventery/waitinglist.html',{'waiting':waiting})
 
+    
+
 @method_decorator(login_required, name='dispatch')
 class Waitingqueue(View):
     ''' Geting Queue Of Waiting List '''
@@ -176,12 +195,25 @@ class Waitingqueue(View):
         id      = request.GET.get('id',None)
         book    = get_object_or_404(models.BookDetail,id=id)
         waiting = book.waiting.waitingtime_set.order_by('request_time')
-        print(waiting)
         student = []
         re_time = []
+        delete_url = []
         for i in waiting:
             student.append(i.user.first_name.capitalize())
             re_time.append(i.request_time.strftime("%b %d %Y %H:%M:%S"))
-            
-        return JsonResponse(status=200,data={'success':True,'msg':'Data not found..!','student':student,'re_time':re_time})
+            delete_url.append(reverse('bookinventery:deletepen',kwargs={'id':book.waiting.id}) if i.user == request.user else False)
 
+        return JsonResponse(status=200,
+            data={'success':True,
+                  'msg':'Data not found..!',
+                  'student':student,'re_time':re_time,'url':delete_url
+                  })
+
+@method_decorator(login_required, name='dispatch')
+class Deletepen(View):
+
+    def get(self,request,*args, **kwargs):
+        id      = kwargs.get('id',None)
+        book    = get_object_or_404(models.BookDetail,id=id)
+        book.waiting.user.remove(request.user)
+        return redirect('account:index')

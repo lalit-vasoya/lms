@@ -5,9 +5,10 @@
         {% include 'message.html' %}
         <hr>
         {% if user.is_staff %}
-            <h3><span style="background-color:#f48024;">L</span><span style="background-color:#f8f2fa;">ibrarian</span> <span style="background-color:#f48024;">P</span><span style="background-color:#f8f2fa;">rofile</span></h3>
+            <h3><span style="background-color:var(--card-bg-color);padding:4px;">Librarian Profile</span></h3>
         {% else %}
-            <h3><span style="background-color:#f48024;">S</span><span style="background-color:#f8f2fa;">tudent</span> <span style="background-color:#f48024;">P</span><span style="background-color:#f8f2fa;">rofile</span></h3>
+            <!-- <h3><span style="background-color:var(--main-bg-color);">S</span><span style="background-color:#f8f2fa;">tudent</span> <span style="background-color:var(--main-bg-color);">P</span><span style="background-color:#f8f2fa;">rofile</span></h3> -->
+            <h3><span style="background-color:var(--card-bg-color);padding:4px;">Student Profile</span></h3>
         {% endif %}
         <hr>    
         <table class="table table-hover" style="width:70%;">
