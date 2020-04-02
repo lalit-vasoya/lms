@@ -1,6 +1,6 @@
 from django.shortcuts               import render,get_object_or_404,redirect,reverse
 from django.views                   import View
-from django.views.generic           import ListView
+from django.views.generic           import ListView,CreateView,UpdateView,DeleteView
 from django.contrib                 import messages
 from bookinventery                  import models
 from django.http                    import JsonResponse
@@ -13,13 +13,18 @@ from LMS                            import password
 from django.core.serializers        import serialize
 import threading
 from itertools                      import chain
+from django.urls                    import reverse_lazy
+from django.core.paginator          import Paginator
 
 @method_decorator(login_required, name='dispatch')
 class Searchbook(View):
     ''' Render The SearchBook Html '''
     def get(self,request,*args, **kwargs):
         books = models.BookDetail.objects.all()
-        return render(request,'bookinventery/searchbook.html',{'books':books})
+        paginator = Paginator(books,8)
+        page_number = request.GET.get('page')
+        books = paginator.get_page(page_number)
+        return render(request,'bookinventery/searchbook.html',{'page_obj':books})
 
 @method_decorator(login_required, name='dispatch')
 class Searchbookajax(View):
@@ -27,7 +32,7 @@ class Searchbookajax(View):
     def get(self,request,*args, **kwargs):
         searchtext  = request.GET.get('searchtext',None)
         if searchtext=="":
-            books = models.BookDetail.objects.all()
+            books = models.BookDetail.objects.all()[0:8]
         else:
             books       = models.BookDetail.objects.filter(title__icontains=searchtext)
         context     ={'books':serialize('json',books)}
@@ -77,6 +82,7 @@ class Issuebook(ListView):
     model         = models.Transaction
     template_name = 'bookinventery/mybook.html'    
     extra_context = {'title':'Issue Book'}
+    paginate_by   = 8
 
     def get_queryset(self):
         if self.request.user.is_staff:
@@ -91,6 +97,7 @@ class Returnbook(ListView):
     model         = models.Transaction
     template_name = 'bookinventery/mybook.html'   
     extra_context = {'title':'Return Book'}     
+    paginate_by   = 8
 
     def get_queryset(self):
         if self.request.user.is_staff:
@@ -105,10 +112,11 @@ class Pendingrequest(View):
     ''' Pending Request For The Issue Book'''
     def get(self,request,*args, **kwargs):
         transaction = models.Transaction.objects.filter(status__in=[0,1]).order_by('status','request_date')
-        return render(request,'bookinventery/request.html',{'object_list':transaction})
+        paginator = Paginator(transaction,8)
+        page_number = request.GET.get('page')
+        transaction = paginator.get_page(page_number)
+        return render(request,'bookinventery/request.html',{'page_obj':transaction})
 
-
-        
 
 @method_decorator(login_required, name='dispatch')
 class Acceptrequest(View):
@@ -184,7 +192,10 @@ class Waitinglist(View):
             waiting = (models.Waiting.objects.annotate(usercount=Count('user')).filter(usercount__gt=0))
         else:    
             waiting = models.Waiting.objects.filter(user=request.user)
-        return render(request,'bookinventery/waitinglist.html',{'waiting':waiting})
+        page_number = request.GET.get('page')
+        paginator = Paginator(waiting,8)
+        waiting = paginator.get_page(page_number)
+        return render(request,'bookinventery/waitinglist.html',{'page_obj':waiting})
 
     
 
@@ -217,3 +228,75 @@ class Deletepen(View):
         book    = get_object_or_404(models.BookDetail,id=id)
         book.waiting.user.remove(request.user)
         return redirect('account:index')
+
+
+#books
+@method_decorator(login_required, name='dispatch')
+class Listbook(ListView):
+    ''' List Book in Librarian '''
+    model               = models.BookDetail
+    context_object_name = 'books'
+    template_name       = 'bookinventery/listbook.html'
+    paginate_by   = 8
+
+@method_decorator(login_required, name='dispatch')
+class Createbook(CreateView):
+    ''' Create Book by Librarian '''
+    model         = models.BookDetail
+    fields        = ('title','author','quantity','category')
+    success_url   = reverse_lazy('bookinventery:listbook')
+    template_name = 'bookinventery/createbook.html'
+    extra_context = {'view':'Add'}
+
+@method_decorator(login_required, name='dispatch')
+class Updatebook(UpdateView):
+    ''' Update Book By Librarian '''
+    model         = models.BookDetail
+    fields        = ('title','author','quantity','category')
+    success_url   = reverse_lazy('bookinventery:listbook')
+    template_name = 'bookinventery/createbook.html'
+    pk_url_kwarg  = 'id'
+    extra_context = {'view':'Update'}
+
+@method_decorator(login_required, name='dispatch')
+class Deletebook(DeleteView):
+    ''' Delete Book By Librarian '''
+    model         = models.BookDetail
+    success_url   = reverse_lazy('bookinventery:listbook')
+    template_name = 'bookinventery/deletebook.html'
+    pk_url_kwarg  = 'id'
+
+#book categories
+@method_decorator(login_required, name='dispatch')
+class Listbookcategory(ListView):
+    ''' List Book Category in Librarian '''
+    model               = models.BookCategories
+    template_name       = 'bookinventery/listbookcategory.html'
+    paginate_by         = 8
+
+@method_decorator(login_required, name='dispatch')
+class Createbookcategory(CreateView):
+    ''' Create Book Category by Librarian '''
+    model         = models.BookCategories
+    fields        = ('name','description')
+    success_url   = reverse_lazy('bookinventery:listbookcategory')
+    template_name = 'bookinventery/createbookcategory.html'
+    extra_context = {'view':'Add'}
+
+@method_decorator(login_required, name='dispatch')
+class Updatebookcategory(UpdateView):
+    ''' Update Book Category By Librarian '''
+    model         = models.BookCategories
+    fields        = ('name','description')
+    success_url   = reverse_lazy('bookinventery:listbookcategory')
+    template_name = 'bookinventery/createbookcategory.html'
+    pk_url_kwarg  = 'id'
+    extra_context = {'view':'Update'}
+
+@method_decorator(login_required, name='dispatch')
+class Deletebookcategory(DeleteView):
+    ''' Delete Book Category By Librarian '''
+    model         = models.BookCategories
+    success_url   = reverse_lazy('bookinventery:listbookcategory')
+    template_name = 'bookinventery/deletebookcategory.html'
+    pk_url_kwarg  = 'id'

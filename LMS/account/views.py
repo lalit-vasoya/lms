@@ -32,7 +32,7 @@ class Singup(View):
             return redirect('account:login')
         else:
             form = forms.SingupForm(request.POST)   
-            messages.error(request,'Fill Valid Data!')
+            messages.error(request,'Registration Details invalid Please Try again..!')
             return render(request,'account/signup.html',{'form':form})
 
 class Login(View):
@@ -53,11 +53,11 @@ class Login(View):
                 messages.success(request,'Login Successfull..!')
                 return redirect('account:index')    
             else:
-                messages.error(request,'Fill Valid Data..!')
+                messages.error(request,'Email or Password invalid Please Try again..!')
                 return render(request,'account/login.html',{'form':form})            
         else:
             form  = forms.LoginForm()
-            messages.error(request,'Fill Valid Data..!')
+            messages.error(request,'Email or Password invalid Please Try again..!')
             return render(request,'account/login.html',{'form':form})            
 
 

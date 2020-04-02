@@ -29,12 +29,14 @@
                     <th>Issue Date</th>
                     <th>Return Date</th>
                     <th>Status</th>
+                    {% if title == 'Issue Book'%}
                     <th>Delete Request</th>
+                    {% endif %}
                 </tr>
             </thead>
 
             <body>
-                {% for i in object_list %}
+                {% for i in page_obj %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     {% if user.is_staff %}
@@ -57,13 +59,14 @@
                     </td>
                     {% if i.status == 0 %}
                     <td>
-                        <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-trash"></i></a>
+                        <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-trash"></i> Remove</a>
                     </td>
                     {% endif %}
                 </tr>
                 {% endfor %}
             </body>
         </table>
+        {% include 'pagination.html' %}
         {% else %}
         <div class="col-sm-12">
             <br>

@@ -23,6 +23,7 @@ class BookDetail(models.Model):
     def __str__(self):
         return self.title
 
+
 class Transaction(models.Model):
     ''' Books Transaction who issue book,which book are issue,how many time he/she ready the book '''
 

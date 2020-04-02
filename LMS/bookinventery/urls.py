@@ -18,4 +18,14 @@ urlpatterns = [
     path('<int:id>/acceptrequest',views.Acceptrequest.as_view(),name='acceptrequest'),
     path('<int:id>/returnrequest',views.Returnrequest.as_view(),name='returnrequest'),
     path('<int:id>/deleterequest',views.Deleterequest.as_view(),name='deleterequest'),
+    #books
+    path('listbook',views.Listbook.as_view(),name='listbook'),
+    path('createbook',views.Createbook.as_view(),name='createbook'),
+    path('<int:id>/updatebook',views.Updatebook.as_view(),name='updatebook'),
+    path('<int:id>/deletebook',views.Deletebook.as_view(),name='deletebook'),
+    #books categories
+    path('listbookcategory',views.Listbookcategory.as_view(),name='listbookcategory'),
+    path('createbookcategory',views.Createbookcategory.as_view(),name='createbookcategory'),
+    path('<int:id>/updatebookcategory',views.Updatebookcategory.as_view(),name='updatebookcategory'),
+    path('<int:id>/deletebookcategory',views.Deletebookcategory.as_view(),name='deletebookcategory'),
 ]

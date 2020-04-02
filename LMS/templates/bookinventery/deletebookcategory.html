@@ -1,0 +1,10 @@
+{% extends 'account/base.html' %}
+{% block body %}
+<div class="col-md-12">
+    <center>
+        <form method="post">{% csrf_token %}
+            <p class="alert alert-warning">Are you sure you want to delete "{{ object }}"? <input type="submit" class="btn btn-danger" value="Confirm"></p>
+        </form>
+    </center>
+</div>
+{% endblock body %}

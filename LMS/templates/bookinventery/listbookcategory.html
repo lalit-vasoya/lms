@@ -1,0 +1,52 @@
+{% extends 'account/base.html' %}
+{% block body %}
+<div class="col-md-12">
+    <center>
+
+        <hr>
+        <div>
+            <div class="row">
+                <div class="col-md-5 text-right">
+                    <h3><span style="background-color:var(--card-bg-color);padding:4px;">Book Categories</span></h3>
+                </div>
+                <div class="col-md-3">
+                    <a class="btn btn-info" href="{% url 'bookinventery:createbookcategory' %}"><i class="fas fa-plus"></i> Add Book Category</a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        {% if page_obj %}
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th><b>Name</b></th>
+                    <th><b>Description</b></th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+
+            <body>
+                {% for i in page_obj %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><b>{{ i.name }}</b></td>
+                    <td><b>{{ i.description }}</b></td>
+                    <td><a class="btn btn-outline-dark" href="{% url 'bookinventery:updatebookcategory' id=i.pk %}"><i class="fas fa-edit"></i> Update </a></td>
+                    <td><a class="btn btn-outline-dark" href="{% url 'bookinventery:deletebookcategory' id=i.pk %}"><i class="fas fa-trash"></i> Delete </a></td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        {% else %}
+        <div class="col-sm-12">
+            <br>
+            <div class="alert alert-warning text-center" style="width:80%;margin: 0 auto;">
+                <a href="#" class="alert-link">You have not any Book Categories...!</a>
+            </div> 
+        {% endif %}
+    </center>
+   {% include 'pagination.html' %}
+</div>
+{% endblock body %}
