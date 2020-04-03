@@ -8,6 +8,7 @@ urlpatterns = [
     path('searchbookajax',views.Searchbookajax.as_view(),name='searchbookajax'),
     path('requestbook',views.Requestbook.as_view(),name='requestbook'),
     path('issuebook',views.Issuebook.as_view(),name='issuebook'),
+    path('rejectbook',views.Rejectbook.as_view(),name='rejectbook'),
     path('returnbook',views.Returnbook.as_view(),name='returnbook'),
     path('waitinglist',views.Waitinglist.as_view(),name='waitinglist'),
     path('waitingqueue',views.Waitingqueue.as_view(),name='waitingqueue'),
@@ -23,6 +24,7 @@ urlpatterns = [
     path('createbook',views.Createbook.as_view(),name='createbook'),
     path('<int:id>/updatebook',views.Updatebook.as_view(),name='updatebook'),
     path('<int:id>/deletebook',views.Deletebook.as_view(),name='deletebook'),
+
     #books categories
     path('listbookcategory',views.Listbookcategory.as_view(),name='listbookcategory'),
     path('createbookcategory',views.Createbookcategory.as_view(),name='createbookcategory'),

@@ -84,32 +84,33 @@
               {% if user.is_staff %} 
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'pendingrequest' %}active{% endif %}"
-                  href="{% url 'bookinventery:pendingrequest' %}"><i class="fas fa-book" aria-hidden="true"></i> Book Request</a>
+                  href="{% url 'bookinventery:pendingrequest' %}"><i class="fas fa-book" aria-hidden="true"></i> Request</a>
               </li>
               {% endif %}
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'issuebook' %}active{% endif %}"
-                  href="{% url 'bookinventery:issuebook' %}"><i class="fas fa-book" aria-hidden="true"></i> Issue Books</a>
+                  href="{% url 'bookinventery:issuebook' %}"><i class="fas fa-book" aria-hidden="true"></i> Issue</a>
               </li>
-
+              <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'rejectbook' %} active {% endif %}"
+                  href="{% url 'bookinventery:rejectbook' %}"><i class="fas fa-book" aria-hidden="true"></i> Reject</a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'returnbook' %} active {% endif %}"
-                  href="{% url 'bookinventery:returnbook' %}"><i class="fas fa-book" aria-hidden="true"></i> Return
-                  Books</a>
+                  href="{% url 'bookinventery:returnbook' %}"><i class="fas fa-book" aria-hidden="true"></i> Return</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'waitinglist' %} active {% endif %}"
-                  href="{% url 'bookinventery:waitinglist' %}"><i class="fas fa-clock" aria-hidden="true"></i> Waiting
-                  List</a>
+                  href="{% url 'bookinventery:waitinglist' %}"><i class="fas fa-clock" aria-hidden="true"></i> Waiting</a>
               </li>
               {% if user.is_staff %}
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'listbook' %}active{% endif %}"
-                  href="{% url 'bookinventery:listbook' %}"><i class="fas fa-plus"></i> Books</a>
+                  href="{% url 'bookinventery:listbook' %}"><i class="fas fa-plus-circle"></i> Books</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {% if request.resolver_match.url_name == 'listbookcategory' %}active{% endif %}"
-                  href="{% url 'bookinventery:listbookcategory' %}"><i class="fas fa-plus"></i> Category </a>
+                  href="{% url 'bookinventery:listbookcategory' %}"><i class="fas fa-plus-square"></i> Category </a>
               </li>
               {% endif %}
               {% if not user.is_authenticated %}

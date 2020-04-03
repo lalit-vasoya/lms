@@ -44,7 +44,7 @@ class Searchbookajax(View):
 class Requestbook(View):
     ''' Issue Book By User'''
     def get(self,request,*args, **kwargs):
-        total_issue_book = models.Transaction.objects.filter(issue_by=request.user,status=0).aggregate(count=Count('issue_by'))['count']
+        total_issue_book = models.Transaction.objects.filter(issue_by=request.user,status__in=[0,1]).aggregate(count=Count('issue_by'))['count']
         if total_issue_book<3:
             id = request.GET.get('id',None)
             if id:
@@ -67,9 +67,9 @@ class Requestbook(View):
                         else:
                             return JsonResponse(status=203,data={'success':"You are already in waiting list..!"})
                     else:
-                        print('----------------------------------else')
                         wait = models.Waiting.objects.create(book=book)
                         wait.user.add(request.user,through_defaults={'request_time':timezone.now()})
+                        print('----------------------------------else')
                     return JsonResponse(status=203,data={'success':"This Book Not Available Yet,So You are add in Waiting List For This book..!"})
             else:
                 return JsonResponse(status=203,data={'success':"This book not found in Library..!"})
@@ -102,8 +102,22 @@ class Returnbook(ListView):
     def get_queryset(self):
         if self.request.user.is_staff:
             return self.model.objects.filter(status=2)
-        else:
+        else:# path('<int:id>/rejectrequest',views.Rejectrequest.as_view(),name='rejectrequest'),
             return self.model.objects.filter(issue_by=self.request.user,status=2)
+
+@method_decorator(login_required, name='dispatch')
+class Rejectbook(ListView):
+    ''' Show Reject Book '''
+    model         = models.Transaction
+    template_name = 'bookinventery/rejectbook.html'   
+    extra_context = {'title':'Reject Book Request By Librarian'}     
+    paginate_by   = 8
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return self.model.objects.filter(status=3)
+        else:# path('<int:id>/rejectrequest',views.Rejectrequest.as_view(),name='rejectrequest'),
+            return self.model.objects.filter(issue_by=self.request.user,status=3)
         
 # Librarian 
 
@@ -154,6 +168,7 @@ class Returnrequest(View):
 
         return redirect('bookinventery:pendingrequest')
 
+
 @method_decorator(login_required, name='dispatch')
 class Deleterequest(View):
     ''' Delete book pending return by Librarian '''
@@ -164,7 +179,13 @@ class Deleterequest(View):
             if transaction.status==0:
                 book = get_object_or_404(models.BookDetail,id=transaction.book.id)  
                 id   = transaction.book.id
-                transaction.delete()
+                if  request.user.is_staff:
+                    transaction.status=3
+                    transaction.save()
+                    print('come in staff if')
+                else:
+                    transaction.delete()
+                    print('come in student else')
                 if models.Waiting.objects.filter(book=book).count()==0:
                     #when this book waiting is not available
                     models.BookDetail.objects.filter(id=id).update(quantity=F('quantity')+1)
@@ -212,7 +233,7 @@ class Waitingqueue(View):
         for i in waiting:
             student.append(i.user.first_name.capitalize())
             re_time.append(i.request_time.strftime("%b %d %Y %H:%M:%S"))
-            delete_url.append(reverse('bookinventery:deletepen',kwargs={'id':book.waiting.id}) if i.user == request.user else False)
+            delete_url.append(reverse('bookinventery:deletepen',kwargs={'id':id}) if i.user == request.user else False)
 
         return JsonResponse(status=200,
             data={'success':True,
@@ -226,6 +247,7 @@ class Deletepen(View):
     def get(self,request,*args, **kwargs):
         id      = kwargs.get('id',None)
         book    = get_object_or_404(models.BookDetail,id=id)
+        print(book)
         book.waiting.user.remove(request.user)
         return redirect('account:index')
 

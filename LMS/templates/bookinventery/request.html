@@ -23,7 +23,7 @@
                     <th>Issue Date</th>
                     <th>Return Date</th>
                     <th style="border-left:2px solid rgba(0, 0, 0, .3);">Change Status</th>
-                    <th>Delete Request</th>
+                    <th>Reject </th>
                 </tr>
             </thead>
 
@@ -52,7 +52,7 @@
                                 <a class="badge badge-success accept sm" href="{% url 'bookinventery:acceptrequest' id=i.id %}">Issue <i class="fas fa-check fa-1x"></i></a>
                             </td>
                             <td>
-                                <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-trash"></i> Remove</a>
+                                <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-minus-circle"></i> Reject</a>
                             </td>
                         {% elif i.status == 1 %}
                                 <a class="badge badge-info return sm" href="{% url 'bookinventery:returnrequest' id=i.id %}">Return <i class="fas fa-check fa-1x"></i></a>

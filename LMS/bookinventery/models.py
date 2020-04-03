@@ -27,7 +27,7 @@ class BookDetail(models.Model):
 class Transaction(models.Model):
     ''' Books Transaction who issue book,which book are issue,how many time he/she ready the book '''
 
-    STATUS = ((0,'Pending'),(1,'Issue'),(2,'Return'))
+    STATUS = ((0,'Pending'),(1,'Issue'),(2,'Return'),(3,'Reject'))
     
     book         = models.ForeignKey(BookDetail,on_delete=models.CASCADE)
     issue_by     = models.ForeignKey(User,on_delete=models.CASCADE)
