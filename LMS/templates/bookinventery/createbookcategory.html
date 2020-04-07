@@ -1,0 +1,41 @@
+{% extends 'account/base.html' %}
+{% block body %}
+<div class="col-md-12">
+    <center>
+        {% include 'message.html' %}
+                    <hr>
+                    <h1>{{ view }} Books</h1>
+                    <a class="btn btn-info" href="{% url 'bookinventery:listbookcategory' %}"><i class="fas fa-book"></i> All Categories</a>
+                    <hr>
+                    {% include 'message.html' %}
+                    <p id="error"></p>
+                    <table >
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            {% for field in form %}
+                            <tr>
+                                <td>
+                                    {{ field.label}}
+                                </td>
+                                <td style="padding: 10px;">
+                                    {{ field }}
+                                </td>
+                                <td>
+                                    {{ field.errors }}
+                                </td>
+                            </tr>
+                            {% endfor%}
+                            <tr>
+                                <td colspan="3">
+                                    <hr>
+                                    <center><button type="submit" id="id_submit" class="btn btn-primary">{{ view}}</button></center>
+                                    <hr>
+                                </td>
+                            </tr>
+                        </form>
+                    </table>
+            </div>
+            </center>
+        </div>
+{% endblock body %}

@@ -1,17 +1,21 @@
 {% extends 'account/base.html' %}
 {% load static %}
 
+<a class="btn btn-info" href="{% url 'bookinventery:createbook' %}"><i class="fas fa-plus"></i> Add Book</a>
 {% block body %}
 <div class="col-md-12 ">
 {% if page_obj|length > 0 %}
     <center>
         <hr>
         <div class="row">
-            <div class="col-md-5 text-right">
-                <h3><span style="background-color:var(--card-bg-color);padding:4px;">Books</span></h3>
+            <div class="col-md-4 text-right">
+            <h3><span style="background-color:var(--main-bg-color);">B</span><span style="background-color:#f8f2fa;">ooks</span> </h3>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <input type="text" placeholder="Search Books" class="form-control searchbook"/>
+            </div>
+            <div class="col-md-3 text-left">
+                <a class="btn btn-info" href="{% url 'bookinventery:createbook' %}"><i class="fas fa-plus"></i> Add Book</a>
             </div>
         </div>
         <hr>
@@ -27,7 +31,8 @@
                             <h5 class="card-title">Author : {{ i.author|title }}</h5>
                             <h5 class="card-title">Quantity : <span id="quantity_{{ i.pk }}">{{ i.quantity }}</span></h5>
                             <h5 class="card-title">Category : {{ i.category }}</h5>
-                            <button class="btn btn-outline-dark issue" type="button" id="id_{{ i.pk }}">Issue</button>
+                            <a class="btn btn-outline-dark" href="{% url 'bookinventery:updatebook' id=i.pk %}"><i class="fas fa-edit"></i> Edit </a>
+                            <a class="btn btn-outline-dark" href="{% url 'bookinventery:deletebook' id=i.pk %}"><i class="fas fa-trash"></i> Delete </a>
                         </div>
                     </div>
                   </div>
@@ -36,8 +41,7 @@
                 <div class="row">
                 {% endif %}
                 {% endfor %}
-            </div>
-    
+        </div>
         {% elif page_obj|length <= 0 and  page_obj != None %}
         <div class="col-sm-12">
             <br>
@@ -48,10 +52,10 @@
         </div>
         </div>
     </center>
-
     {% include 'pagination.html' %}
+</div> 
 
-</div>
+
 
 
 <script>
@@ -83,7 +87,8 @@
                                         <h5 class="card-title">Author : ${books[i].fields.author}</h5>
                                         <h5 class="card-title">Quantity : <span id="quantity_${books[i].pk}">${books[i].fields.quantity}</span></h5>
                                         <h5 class="card-title">Category : ${books[i].fields.category}</h5>
-                                        <button class="btn btn-outline-dark issue" type="button" id="id_${books[i].pk}">Issue</button>
+                                        <a class="btn btn-outline-dark" href="${books[i].pk}/updatebook"><i class="fas fa-edit"></i> Edit </a>
+                                        <a class="btn btn-outline-dark" href="${books[i].pk}/deletebook"><i class="fas fa-trash"></i> Delete </a>
                                     </div>
                                 </div>
                             </div>`;
@@ -94,7 +99,7 @@
                                 }
                             counter++;
                     }
-                    card+=`</div>`;
+                    card+=`</div></div>`;
                     $('.byajax').html(card);
             },
         });   
@@ -105,32 +110,5 @@
         clearTimeout(timer)
         timer = setTimeout(searchbook,800)
     });
-
-    $(document).on('click','button.issue',function () {
-
-        let result = confirm('Are you want to issue This book')
-        if (result) {
-            id = this.id.split('_').pop()
-            $.ajax({
-                url: "{% url 'bookinventery:requestbook' %}",
-                dataType: "json",
-                data: { 'id': id },
-                success: function (data) {
-                    if (data.success == true) {
-                        alert(data.msg)
-                        if(data.deduce){
-                            let val = $('#quantity_' + id).text();
-                            val = $('#quantity_' + id).text(val-1);
-                        }
-                    } else {
-                        alert(data.success)
-                    }
-                },
-            });
-        } else {
-
-        }
-    });
-
 </script>
 {% endblock body %}

@@ -1,0 +1,118 @@
+{% extends 'account/base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="col-md-12">
+{% if page_obj|length > 0 %}
+    <center>
+        <hr>
+            <h3><span style="background-color:var(--card-bg-color);padding:4px;">Waiting List Of Books</span></h3>
+        <hr>
+        <div class="col-md-12">
+                <div class="row">
+                {% for i in page_obj %}
+                <div class="card" style="width:280px;border-color: var(--main-bg-color);margin:5px;background-color:var(--card-bg-color);">
+                    <div class="card-body">
+                        <h4 class="card-title" style="background-color:#f8f2fa;padding:5;">{{ i.book.title|title }}</h4>
+                        <hr style="border-top-color:#343a40;border-top-width:2;">
+                        <h5 class="card-title">Author : {{ i.book.author|title }}</h5>  
+                        <h5 class="card-title">Category : {{ i.book.category }}</h5>
+                        <button class="btn btn-outline-dark waiting-list" type="button" id="id_{{ i.book.pk }}">Waiting List</button>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:4 %}
+            </div>
+            <div class="card-deck">
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% elif page_obj|length <= 0 and  page_obj != None %}
+        <div class="col-sm-12">
+            <br>
+            <div class="alert alert-warning text-center" style="width:80%;margin: 0 auto;">
+                <a href="#" class="alert-link">You are not in waiting list for any Books Yet</a>..!
+            </div>  
+        {% endif%}
+    </center>
+</div>
+
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Waiting List for This Book</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <center>
+                <div class="wait-table">
+                    
+                </div>
+                </center>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function issue() {
+        alert('ok' + this.value);
+    }
+
+    $('.waiting-list').click(function () {
+        id = this.id.split('_').pop()
+        $.ajax({
+            url: "{% url 'bookinventery:waitingqueue' %}",
+            dataType: "json",
+            data: { 'id': id },
+            success: function (data) {
+                if (data.success == true) {
+                    var table = "<table class='table table-hover text-center'>"+
+                        "<thead>"+
+                                "<tr>"+
+                                    "<th>No.(Priority)</th>"+
+                                    "<th>Student</th>"+
+                                    "<th>Request Time</th>"+
+                                    "<th>Delete Request</th>"
+                                "</tr>"+
+                            "</thead>"+               
+                                "<tbody>";
+                        
+                                for(i in data.student){
+                                    table+="<tr>"+
+                                    "<td>"+(parseInt(i)+1)+"</td>"+
+                                    "<td>"+(data.student[i])+"</td>"+
+                                    "<td>"+(data.re_time[i])+"</td>"+
+                                    "<td>";
+
+                                        if(data.url[i]){
+                                            table+="<a class='badge badge-danger delete' href="+data.url[i]+"><i class='fas fa-trash'></i></a>";
+                                        }else{
+                                            table+="<a class='badge badge-danger delete' deactive><i class='fas fa-trash'></i></a>";   
+                                        }
+                                        table+="</td>"+
+                                    "</tr>";
+                                }
+                                table+="</tbody></table>"
+                    $('.wait-table').html(table);
+                    $('#myModal').modal('show')
+                } else {
+                    alert(data.success)
+                }
+            },
+        });
+    });
+</script>
+{% endblock body %}

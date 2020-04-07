@@ -22,12 +22,7 @@
                     <th>Title</th>
                     <th>Author</th>
                     <th>Request Date</th>
-                    <th>Issue Date</th>
-                    <th>Return Date</th>
                     <th>Status</th>
-                    {% if title == 'Issue Book'%}
-                    <th>Delete Request</th>
-                    {% endif %}
                 </tr>
             </thead>
 
@@ -42,26 +37,7 @@
                     <td>{{ i.book.title }}</td>
                     <td>{{ i.book.author }}</td>
                     <td>{{ i.request_date }}</td>
-                    <td>{% if i.issue_date %}{{ i.issue_date }} {% else %} -- {% endif %}</td>
-                    <td>{% if i.return_date %}{{ i.return_date }} {% else %} -- {% endif %}</td>
-                    <td>
-                        {% if i.status == 0 %}
-                            <span class="badge badge-info">Pending</span>
-                        {% elif i.status == 1 %}
-                            <span class="badge badge-danger">Not Return Yet</span>
-                        {% else %}
-                            <span class="badge badge-success">Return</span> 
-                        {% endif %}
-                    </td>
-                    {% if i.status == 0 and user.is_staff %}
-                        <td>
-                            <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-minus-circle"></i> Reject</a>
-                        </td>
-                    {% elif i.status == 0 %}
-                        <td>
-                            <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-trash"></i> Remove</a>
-                        </td>
-                    {% endif %}
+                    <td><span class="badge badge-warning">Rejected</span></td>
                 </tr>
                 {% endfor %}
             </body>
@@ -79,7 +55,7 @@
 </div>
     <script>
         $('.delete').click(function (event) {
-            let result = confirm('Are you sure,You want to do This Action..!')
+            let result = confirm('Are you sure,You want to Delete This Record')
             if (!result) {
                 event.preventDefault();
             }

@@ -1,0 +1,47 @@
+----------------------------------------
+	Library Management System
+----------------------------------------
+User:
+- id
+- email
+- first_name
+- last_name
+- username
+- password
+- contact
+- staff
+
+----------------------------------------
+
+Profile:enhance
+-id
+-user OneToOneField(User)
+-Detail (Detail about user)
+
+----------------------------------------
+
+BooKCategories
+- id
+- name
+- description
+
+----------------------------------------
+
+BookDetail:
+- id
+- title
+- author
+- quantity
+- category Foreignkey(BookCategories)
+
+----------------------------------------
+
+Transactions :
+- id 
+- book Foreignkey(BookDetail)
+- issue_by Foreignkey(User)
+- request_date 
+- issue_date
+- status (Pending,issue,return)
+
+----------------------------------------

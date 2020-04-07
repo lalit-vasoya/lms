@@ -1,0 +1,98 @@
+{% extends 'account/base.html' %}
+{% block body %}
+<div class="col-md-12">
+    <center>
+        {% if page_obj %}
+        <hr>
+        <div>
+            <strong>            
+                <h3><span style="background-color:var(--card-bg-color);padding:4px;">Request Book</span></h3>
+            </strong>
+        </div>
+        <hr>
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Current Status</th>
+                    <th>Request By</th>
+                    <th>Std. Contact</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Request Date</th>
+                    <th>Issue Date</th>
+                    <th>Return Date</th>
+                    <th style="border-left:2px solid rgba(0, 0, 0, .3);">Change Status</th>
+                    <th>Reject </th>
+                </tr>
+            </thead>
+
+            <body>
+                {% for i in page_obj %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td id="cureentstatus{{ i.id }}">
+                        {% if i.status == 0 %}
+                            <span class="badge badge-info">Pending</span>
+                        {% elif i.status == 1 %}
+                            <span class="badge badge-danger">Not Return Yet</span>
+                        {% else %}
+                            <span class="badge badge-success">Return</span> 
+                        {% endif %}
+                    </td> 
+                    <td><b>{{ i.issue_by }}</b></td>
+                    <td><b>{{ i.issue_by.contact }}</b></td>
+                    <td>{{ i.book.title }}</td>
+                    <td>{{ i.book.author }}</td>
+                    <td><b>{{ i.request_date }}</b></td>
+                    <td id="issue_date{{ i.id }}">{% if i.issue_date %}{{ i.issue_date }} {% else %} -- {% endif %}</td>
+                    <td id="return_date{{ i.id }}">{% if i.return_date %}{{ i.return_date }} {% else %} -- {% endif %}</td>
+                    <td style="border-left:2px solid rgba(0, 0, 0, .3);">
+                        {% if i.status == 0 %}
+                                <a class="badge badge-success accept sm" href="{% url 'bookinventery:acceptrequest' id=i.id %}">Issue <i class="fas fa-check fa-1x"></i></a>
+                            </td>
+                            <td>
+                                <a class="badge badge-danger delete" href="{% url 'bookinventery:deleterequest' id=i.id %}"><i class="fas fa-minus-circle"></i> Reject</a>
+                            </td>
+                        {% elif i.status == 1 %}
+                                <a class="badge badge-info return sm" href="{% url 'bookinventery:returnrequest' id=i.id %}">Return <i class="fas fa-check fa-1x"></i></a>
+                            </td>
+                        {% endif %}           
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        {% else %}
+        <div class="col-sm-12">
+            <br>
+            <div class="alert alert-warning text-center" style="width:80%;margin: 0 auto;">
+                <a href="#" class="alert-link">You have not any Pending Request...!</a>
+            </div> 
+        {% endif %}
+    </center>
+   {% include 'pagination.html' %}
+
+</div>
+<script>
+    $('.accept').click(function (event) {
+        let result = confirm('Are you sure,This Book hand over to this student')
+        if (!result) {
+            event.preventDefault();
+        }
+    });
+
+    $('.return').click(function (event) {
+        let result = confirm('Are you sure This Book Return By Student')
+        if (!result) {
+            event.preventDefault();
+        }
+    });
+    
+    $('.delete').click(function (event) {
+        let result = confirm('Are you sure,You want to Delete This Record')
+        if (!result) {
+            event.preventDefault();
+        }
+    });
+</script>
+{% endblock body %}
