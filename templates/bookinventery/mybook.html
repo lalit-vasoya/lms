@@ -1,0 +1,59 @@
+{% extends 'account/base.html' %}
+{% block body %}
+<div class="col-md-12">
+    <center>
+
+        {% if object_list %}
+        <hr>
+        <div>
+            <strong>
+                {% if title == 'Issue Book'%}
+                    <h3><span style="background-color:#f48024;">&nbsp;I</span><span style="background-color:#f8f2fa;">ssued</span> <span style="background-color:#f48024;">B</span><span style="background-color:#f8f2fa;">ooks</span></h3>
+                {% else %}
+                    <h3><span style="background-color:#f48024;">&nbsp;R</span><span style="background-color:#f8f2fa;">eturn</span> <span style="background-color:#f48024;">B</span><span style="background-color:#f8f2fa;">ooks</span></h3>
+                {% endif %}
+            </strong>
+        </div>
+        <hr>
+        <table class="table table-hover text-center" style="width:70%;">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Issue Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <body>
+                {% for i in object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.book.title }}</td>
+                    <td>{{ i.book.author }}</td>
+                    <td>{{ i.issue_date }}</td>
+                    <td>{% if i.return_date %}{{ i.return_date }} {% endif %}</td>
+                    <td>
+                        {% if i.status == 0 %}
+                            <span class="badge badge-info">Pending</span>
+                        {% elif i.status == 1 %}
+                            <span class="badge badge-danger">Not Return Yet</span>
+                        {% else %}
+                            <span class="badge badge-success">Return</span> 
+                        {% endif %}</td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        {% else %}
+        <div class="alert alert-warning">
+            <strong>
+                <h2>You have not any {{title}}...</h2>
+            </strong>
+        </div>
+        {% endif %}
+    </center>
+</div>
+{% endblock body %}
